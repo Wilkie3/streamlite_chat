@@ -1,0 +1,46 @@
+import streamlit as st
+import requests
+
+# FlowiseAI API configuration
+API_URL = "https://wilkie-hf-space-tuto.hf.space/api/v1/prediction/44ea4a5d-ba88-4f29-813c-47f71225c429"
+
+def query(payload):
+    response = requests.post(API_URL, json=payload)
+    return response.json()
+
+def get_flowise_response(user_input):
+    payload = {
+        "question": user_input
+    }
+    response = query(payload)
+    
+    if 'answer' in response:
+        return response['answer']
+    else:
+        return f"Error: {response}"
+
+# Set up the Streamlit app
+st.title("Chatbot")
+st.write("Chat with the bot using FlowiseAI API.")
+
+# Initialize chat history
+if 'history' not in st.session_state:
+    st.session_state.history = []
+
+# User input
+user_input = st.text_input("You: ", "")
+
+if user_input:
+    # Get response from FlowiseAI
+    response = get_flowise_response(user_input)
+    
+    # Update chat history
+    st.session_state.history.append(("You", user_input))
+    st.session_state.history.append(("Chatbot", response))
+    
+    # Clear the input box
+    st.experimental_rerun()
+
+# Display chat history
+for speaker, message in st.session_state.history:
+    st.write(f"{speaker}: {message}")
