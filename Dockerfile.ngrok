@@ -1,0 +1,23 @@
+# Use an official Alpine as a parent image
+FROM alpine:latest
+
+# Install required packages
+RUN apk add --no-cache jq curl unzip
+
+# Download and install ngrok
+RUN apk add --no-cache --virtual .build-deps \
+    ca-certificates wget && \
+    wget -O /tmp/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
+    unzip /tmp/ngrok.zip -d /usr/local/bin && \
+    chmod +x /usr/local/bin/ngrok && \
+    rm /tmp/ngrok.zip && \
+    apk del .build-deps
+
+# Expose the necessary port for ngrok web interface
+EXPOSE 4040
+
+# Set the entrypoint command to run ngrok
+ENTRYPOINT [ "/usr/local/bin/ngrok" ]
+
+# Default command to run ngrok with Streamlit
+CMD [ "http", "streamlit:8501" ]

@@ -1,0 +1,5 @@
+authtoken: 2kLCErWxj0kzjTO7ipm3FMoNgrn_R9zhNZBSKCeLWnNjExQV
+tunnels:
+  streamlit:
+    proto: http
+    addr: 8501

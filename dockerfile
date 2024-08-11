@@ -1,16 +1,18 @@
-# Use the official Python image from the Docker Hub
+# Dockerfile
 FROM python:3.10
-# Set the working directory in the container
+
+# Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . /app
-
-# Install required packages
+# Copy the requirements file and install dependencies
+COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose Streamlit's default port
+# Copy the Streamlit app to the container
+COPY app.py .
+
+# Expose the port that Streamlit uses
 EXPOSE 8501
 
-# Run the Streamlit app
+# Command to run the app
 CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
