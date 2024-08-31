@@ -1,23 +1,27 @@
-# Use an official Alpine as a parent image
 FROM alpine:latest
 
 # Install required packages
-RUN apk add --no-cache jq curl unzip
+RUN apk add --no-cache curl tar unzip
 
-# Download and install ngrok
-RUN apk add --no-cache --virtual .build-deps \
-    ca-certificates wget && \
-    wget -O /tmp/ngrok.zip https://bin.equinox.io/c/4VmDzA7iaHb/ngrok-stable-linux-amd64.zip && \
-    unzip /tmp/ngrok.zip -d /usr/local/bin && \
-    chmod +x /usr/local/bin/ngrok && \
-    rm /tmp/ngrok.zip && \
-    apk del .build-deps
+# Define the latest version of Ngrok and the download URL
+ENV NGROK_VERSION=3.3.0
+ENV NGROK_URL=https://bin.equinox.io/c/bNyj1mQVY4c/ngrok-v3-stable-linux-amd64.tgz
 
-# Expose the necessary port for ngrok web interface
+# Download, extract, and install the latest version of Ngrok
+RUN curl -sL ${NGROK_URL} -o ngrok.tgz && \
+    tar -xzf ngrok.tgz && \
+    mv ngrok /usr/local/bin/ngrok && \
+    rm ngrok.tgz
+
+# Expose Ngrok web interface port
 EXPOSE 4040
 
-# Set the entrypoint command to run ngrok
-ENTRYPOINT [ "/usr/local/bin/ngrok" ]
+# Set environment variable for Ngrok authtoken
+ENV NGROK_AUTHTOKEN=${NGROK_AUTHTOKEN}
 
-# Default command to run ngrok with Streamlit
-CMD [ "http", "streamlit:8501" ]
+# Create a default ngrok configuration file with the required `version` property
+RUN mkdir -p /root/.config/ngrok && \
+    echo -e "version: 2\nauthtoken: ${NGROK_AUTHTOKEN}" > /root/.config/ngrok/ngrok.yml
+
+# Run Ngrok with the specified auth token and start the HTTP tunnel
+CMD echo "Ngrok Authtoken is: $NGROK_AUTHTOKEN" && ngrok start --config /root/.config/ngrok/ngrok.yml --none && ngrok http http://localhost:8501

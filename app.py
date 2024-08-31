@@ -1,9 +1,11 @@
 import streamlit as st
 from streamlit_chat import message
 import requests
+import os
+
 
 # FlowiseAI API configuration
-API_URL = "https://wilkie-hf-space-tuto.hf.space/api/v1/prediction/44ea4a5d-ba88-4f29-813c-47f71225c429"
+API_URL = os.getenv("API_URL", "https://wilkie-hf-space-tuto.hf.space/api/v1/prediction/71a43c0e-b730-4fbe-8506-47c653d39095")
 
 def query(payload):
     response = requests.post(API_URL, json=payload)
@@ -17,8 +19,7 @@ def get_flowise_response(user_input):
     
     if 'text' in response:
         return response['text']
-    else:
-        return f"Error: {response}"
+    return "Error: Unable to get a response from the API."
 
 if 'history' not in st.session_state:
     st.session_state['history'] = []

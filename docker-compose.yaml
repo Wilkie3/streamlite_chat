@@ -1,3 +1,5 @@
+version: '3.8'
+
 services:
   streamlit:
     build:
@@ -12,17 +14,9 @@ services:
       context: .
       dockerfile: Dockerfile.ngrok
     environment:
-      NGROK_AUTHTOKEN: 2kLCErWxj0kzjTO7ipm3FMoNgrn_R9zhNZBSKCeLWnNjExQV
+      NGROK_AUTHTOKEN: ${NGROK_AUTHTOKEN}
     ports:
-      - "4040:4040"  # Expose ngrok web interface
-    command: 
-      ngrok http streamlit:8501 --log=stdout &
-      sleep 15 &&
-      curl --silent http://127.0.0.1:4040/api/tunnels | jq -r '.tunnels[0].public_url'
+      - "4040:4040"
     depends_on:
-      - streamlit  # Ensure ngrok starts only after Streamlit is up
-    restart: always
-    #command: ngrok http streamlit:8501 --log=stdout
-    #ports:
-    #  - "4040:4040"  # Expose ngrok's web interface for inspection
-    #restart: unless-stopped
+      - streamlit
+    restart: unless-stopped
