@@ -2,3 +2,4 @@ streamlit
 streamlit-chat
 pyngrok
 requests
+unittest

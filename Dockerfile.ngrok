@@ -24,4 +24,4 @@ RUN mkdir -p /root/.config/ngrok && \
     echo -e "version: 2\nauthtoken: ${NGROK_AUTHTOKEN}" > /root/.config/ngrok/ngrok.yml
 
 # Run Ngrok with the specified auth token and start the HTTP tunnel
-CMD echo "Ngrok Authtoken is: $NGROK_AUTHTOKEN" && ngrok start --config /root/.config/ngrok/ngrok.yml --none && ngrok http http://localhost:8501
+CMD echo "Ngrok Authtoken is: $NGROK_AUTHTOKEN" && ngrok start --config /root/.config/ngrok/ngrok.yml --none && ngrok http http://localhost:8501 --log=stdout > ngrok.log &

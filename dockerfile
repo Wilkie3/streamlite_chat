@@ -8,7 +8,7 @@ WORKDIR /app
 
 # Copy the requirements file and install dependencies
 COPY requirements.txt .
-RUN echo "NGROK_AUTHTOKEN is: $NGROK_AUTHTOKEN"
+#RUN echo "NGROK_AUTHTOKEN is: $NGROK_AUTHTOKEN"
 #RUN pip install --upgrade --no-cache-dir pip
 RUN pip3 install --no-cache-dir -r requirements.txt
 
@@ -19,4 +19,4 @@ COPY app.py .
 EXPOSE 8501
 
 # Command to run the app
-CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=0.0.0.0"]
+CMD ["streamlit", "run", "app.py", "--server.port=8501", "--server.address=127.0.0.1"]
