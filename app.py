@@ -3,13 +3,22 @@ from streamlit_chat import message
 import requests
 import os
 
-
 # FlowiseAI API configuration
-API_URL = os.getenv("API_URL", "https://wilkie-hf-space-tuto.hf.space/api/v1/prediction/71a43c0e-b730-4fbe-8506-47c653d39095")
+API_URL = os.getenv("API_URL", "https://wilkie-hf-space-tuto.hf.space/api/v1/prediction/037dd3d4-8492-45c4-9c5f-6ff84b8e95ee")
 
 def query(payload):
     response = requests.post(API_URL, json=payload)
-    return response.json()
+    
+    # Check if the response is empty or not valid JSON
+    if response.status_code != 200 or not response.content.strip():
+        return {}
+
+    try:
+        return response.json()
+    except requests.exceptions.JSONDecodeError:
+        # Handle cases where the response body is not valid JSON
+        return {}
+
 
 def get_flowise_response(user_input):
     payload = {
